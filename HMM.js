@@ -3,7 +3,7 @@ const corpus = require('./corpus');
 module.exports = {
 
   argmax : function(word, tag, previousTag){
-
+    console.log("in argmax \r\n");
     let frequency = corpus.frequencyOfCorpus(word, tag, previousTag);
 
     let likehood = (frequency['WORD_WITH_TAG'] / frequency['WORDTAG']) / (frequency['TAG'] / frequency['WORDTAG']);

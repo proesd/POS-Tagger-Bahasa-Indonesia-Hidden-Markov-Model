@@ -8,7 +8,7 @@ let tagset = new Set();
 sentence = fs.readFileSync('lexicon.txt', 'utf-8').split('\n');
 
 // Tokenize sentence to word and tag
-for(let i = 0; i < sentence.length; i++){
+for (let i = 0; i < sentence.length; i++) {
   let t = sentence[i].split(' ');
   t.unshift('START/start');
   wordtag.push(t);
@@ -17,67 +17,72 @@ for(let i = 0; i < sentence.length; i++){
 // Module exports
 module.exports = {
 
-  frequencyOfCorpus : function (word, tag, previous){
+  frequencyOfCorpus: function (word, tag, previous) {
 
-    let WORDTAG     = 0,
-        TAG         = 0,
-        PREVIOUS_TAG = 0,
-        WORD_WITH_TAG = 0,
-        TAG_WITH_PREVIOUS_TAG = 0;
+    let WORDTAG = 0,
+      TAG = 0,
+      PREVIOUS_TAG = 0,
+      WORD_WITH_TAG = 0,
+      TAG_WITH_PREVIOUS_TAG = 0;
 
+    console.log('In corpus \r\n');
     for (var i = 0; i < wordtag.length; i++) {
       for (var j = 1; j < wordtag[i].length - 1; j++) {
 
         let temp = wordtag[i][j].split('/');
-        let prev = wordtag[i][j-1].split('/');
+        let prev = wordtag[i][j - 1].split('/');
 
         // counting frequency of wordtag
         WORDTAG++;
 
         // counting frequency of tag
-        if(tag == temp[1])
+        if (tag == temp[1])
           TAG++;
 
         // counting frequency of previous tag
-        if(previous == prev[1])
+        if (previous == prev[1])
           PREVIOUS_TAG++;
 
         // counting frequency of word with tag
-        if(word.toLowerCase() == temp[0].toLowerCase() && tag == temp[1])
+        if (word.toLowerCase() == temp[0].toLowerCase() && tag == temp[1])
           WORD_WITH_TAG++;
 
         // counting frequency of tag
-        if(tag == temp[1] && previous == prev[1])
+        if (tag == temp[1] && previous == prev[1])
           TAG_WITH_PREVIOUS_TAG++;
 
       }
     }
 
     let frequency = {
-      'WORDTAG' : WORDTAG,
-      'TAG'     : TAG,
-      'PREVIOUS_TAG' : PREVIOUS_TAG,
+      'WORDTAG': WORDTAG,
+      'TAG': TAG,
+      'PREVIOUS_TAG': PREVIOUS_TAG,
       'WORD_WITH_TAG': WORD_WITH_TAG,
-      'TAG_WITH_PREVIOUS_TAG' : TAG_WITH_PREVIOUS_TAG
+      'TAG_WITH_PREVIOUS_TAG': TAG_WITH_PREVIOUS_TAG
     }
     return frequency;
   },
 
   // Get list of tagset
-  listOfTagset : function(word){
-
-    for(let i = 0; i < wordtag.length; i++){
-      for(let j = 0; j < wordtag[i].length - 1; j++){
+  listOfTagset: function (word) {
+    console.log('In list tag set \r\n');
+    console.log(wordtag.length);
+    for (let i = 0; i < wordtag.length; i++) {
+      for (let j = 0; j < wordtag[i].length - 1; j++) {
 
         // Tokenize between word and tag
         let t = wordtag[i][j].split('/');
 
         // make tagset
-        if( word.toLowerCase() == t[0].toLowerCase() && t[1] !== undefined ){
+        if (word.toLowerCase() == t[0].toLowerCase() && t[1] !== undefined) {
           tagset.add(t[1]);
         }
       }
     }
+
+    console.log("tagset length " + Array.from(tagset).length);
+    console.log(tagset);
 
     return tagset;
   }

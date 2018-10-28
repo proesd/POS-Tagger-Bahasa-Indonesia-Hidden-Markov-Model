@@ -8,19 +8,38 @@ const rl = readline.createInterface({
 });
 let previousTag = '';
 
-// building matrix model
-function matrixModel(sentence){
+var logger = function () {
+  var oldConsoleLog = null;
+  var pub = {};
 
+  pub.enableLogger = function enableLogger() {
+    if (oldConsoleLog == null)
+      return;
+
+    window['console']['log'] = oldConsoleLog;
+  };
+
+  pub.disableLogger = function disableLogger() {
+    oldConsoleLog = console.log;
+    window['console']['log'] = function () { };
+  };
+
+  return pub;
+}();
+// building matrix model
+function matrixModel(sentence) {
+
+  console.log("in matrix \r\n");
   let result = new Array();
   let LSekuens = sentence.length;
-  let matrix = new Array( LSekuens );
+  // let matrix = new Array( LSekuens );
 
-  for(let i = 0; i < LSekuens; i++){
-
+  for (let i = 0; i < LSekuens; i++) {
+    console.log("sentence " + i + "/" + sentence[i]);
     let tagProbabilities = new Array();
-    for (let listtag of hmm.listTagsetWord( sentence[i] )) {
-
-      if( i == 0) previousTag = 'start';
+    for (let listtag of hmm.listTagsetWord(sentence[i])) {
+      console.log("tagset " + listtag + "\r\n");
+      if (i == 0) previousTag = 'start';
 
       let argmax = hmm.argmax(sentence[i], listtag, previousTag);
       tagProbabilities.push([listtag, argmax]);
@@ -33,13 +52,13 @@ function matrixModel(sentence){
 }
 
 // best probability of tag
-function bestTag(tagProbabilities){
+function bestTag(tagProbabilities) {
   let best_tag = '';
   let best_prob = 0;
   if (tagProbabilities.length == 1) {
     best_tag = tagProbabilities[0][0];
-  }else {
-    for(let i = 0; i < tagProbabilities.length; i++){
+  } else {
+    for (let i = 0; i < tagProbabilities.length; i++) {
       if (tagProbabilities[i][1] >= best_prob) {
         best_tag = tagProbabilities[i][0];
         best_prob = tagProbabilities[i][1];
@@ -53,18 +72,18 @@ function bestTag(tagProbabilities){
 rl.question('Input : ', (answer) => {
   let t0 = performance.now();
   let sentence = answer.split(' ');
-  
+
   console.log('Please wait...');
 
   let result = matrixModel(sentence);
   console.log('POS Tagger : ');
   console.log(result);
-  
+
   console.log('TREE : ');
-  console.log(rule.tree( result ) );
+  console.log(rule.tree(result));
 
   let t1 = performance.now();
-  console.log('Execution Time : '+(t1-t0));
+  console.log('Execution Time : ' + (t1 - t0));
 
   rl.close();
 });
