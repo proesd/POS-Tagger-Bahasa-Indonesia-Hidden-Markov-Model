@@ -1,5 +1,5 @@
 const { PerformanceObserver, performance } = require('perf_hooks');
-const hmm = require('./hmm');
+const hmm = require('./HMM');
 const rule = require('./rule');
 const readline = require('readline');
 const rl = readline.createInterface({
